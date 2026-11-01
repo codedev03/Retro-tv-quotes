@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Retro Cartoon TV Quote & Joke Generator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Comic Book / Retro Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --comic-yellow: #ffe600;
+            --comic-red: #ff2a2a;
+            --comic-blue: #00d2ff;
+            --comic-purple: #a855f7;
+            --comic-dark: #121212;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: #ffde59;
+            /* Halftone Dots Background */
+            background-image: radial-gradient(#ff5757 20%, transparent 20%), radial-gradient(#ff5757 20%, transparent 20%);
+            background-position: 0 0, 15px 15px;
+            background-size: 30px 30px;
+            color: var(--comic-dark);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .font-bangers {
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1.5px;
+        }
+
+        .font-pixel {
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        /* Bold Pop-Art Shadow Borders */
+        .comic-box {
+            background-color: #ffffff;
+            border: 4px solid var(--comic-dark);
+            box-shadow: 6px 6px 0px var(--comic-dark);
+        }
+
+        .comic-box-yellow {
+            background-color: var(--comic-yellow);
+            border: 4px solid var(--comic-dark);
+            box-shadow: 6px 6px 0px var(--comic-dark);
+        }
+
+        .comic-box-blue {
+            background-color: var(--comic-blue);
+            border: 4px solid var(--comic-dark);
+            box-shadow: 6px 6px 0px var(--comic-dark);
+        }
+
+        /* Big Chunky Arcade Button */
+        .arcade-button {
+            position: relative;
+            display: inline-block;
+            padding: 18px 28px;
+            font-size: 24px;
+            font-family: 'Bangers', cursive;
+            text-transform: uppercase;
+            color: #ffffff;
+            background: linear-gradient(180deg, #ff5959 0%, #d90429 100%);
+            border: 5px solid #121212;
+            border-radius: 9999px;
+            box-shadow: 0 10px 0 #8d021f, 0 14px 10px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: all 0.08s ease;
+            text-shadow: 2px 2px 0px #000000;
+        }
+
+        .arcade-button:active {
+            transform: translateY(6px);
+            box-shadow: 0 4px 0 #8d021f, 0 6px 6px rgba(0,0,0,0.4);
+        }
+
+        /* TV Cabinet Styling */
+        .tv-cabinet {
+            background: #8b4513;
+            background: linear-gradient(145deg, #a54a1a 0%, #5c270b 100%);
+            border: 6px solid #121212;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.8);
+            border-radius: 36px;
+        }
+
+        /* CRT Screen Tube */
+        .crt-screen {
+            background: #18261e;
+            border: 6px solid #121212;
+            border-radius: 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.35) 50%
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* CRT Screen Static / Glow Effects */
+        .crt-glow {
+            box-shadow: inset 0 0 15px rgba(0, 255, 170, 0.15);
+        }
+
+        /* Speech Bubble Styling */
+        .speech-bubble {
+            position: relative;
+            background: #ffffff;
+            border: 4px solid #121212;
+            border-radius: 20px;
+            box-shadow: 4px 4px 0px #121212;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 30px;
+            border-width: 18px 15px 0 0;
+            border-style: solid;
+            border-color: #ffffff transparent transparent transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            left: 28px;
+            border-width: 22px 18px 0 0;
+            border-style: solid;
+            border-color: #121212 transparent transparent transparent;
+            display: block;
+            width: 0;
+            z-index: 0;
+        }
+
+        /* Dynamic Action Splash (KAPOW/BAM animation) */
+        @keyframes popSplash {
+            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 0; }
+        }
+
+        .action-splash {
+            animation: popSplash 0.5s ease-out forwards;
+        }
+
+        /* Static Noise Animation */
+        @keyframes staticNoise {
+            0% { background-position: 0 0; }
+            100% { background-position: 100px 100px; }
+        }
+
+        .tv-static {
+            background-image: repeating-radial-gradient(circle at 50% 50%, #fff 0, #000 2px, transparent 4px);
+            background-size: 12px 12px;
+            animation: staticNoise 0.1s steps(4) infinite;
+            opacity: 0.2;
+        }
+
+        /* TV Dial Knob */
+        .tv-knob {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #4a4a4a 0%, #1a1a1a 100%);
+            border: 3px solid #121212;
+            box-shadow: 2px 2px 0px #000;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tv-knob::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 12px;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-3 sm:p-6">
+
+    <!-- Header Banner -->
+    <header class="w-full max-w-2xl mb-2 flex flex-col items-center">
+        <div class="comic-box-yellow px-6 py-2 rounded-xl transform -rotate-2 relative">
+            <h1 class="font-bangers text-3xl sm:text-5xl text-center tracking-wider text-black drop-shadow-md">
+                📺 RETRO CARTOON TV 💥
+            </h1>
+            <div class="absolute -top-3 -right-3 bg-red-500 text-white font-bangers text-xs sm:text-sm px-2 py-1 rounded-md border-2 border-black transform rotate-12">
+                EXTRA FUN!
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="w-full max-w-2xl flex flex-col items-center gap-4 my-auto">
+
+        <!-- Category Selector Filter Tags -->
+        <div class="flex flex-wrap justify-center gap-2 sm:gap-3 z-20">
+            <button onclick="setCategory('all')" id="cat-all" class="comic-box px-3 py-1 text-xs sm:text-sm font-bangers rounded-lg hover:bg-yellow-300 transition-colors">
+                🌟 ALL CHANNELS
+            </button>
+            <button onclick="setCategory('jokes')" id="cat-jokes" class="comic-box px-3 py-1 text-xs sm:text-sm font-bangers rounded-lg hover:bg-yellow-300 transition-colors">
+                😂 JOKES
+            </button>
+            <button onclick="setCategory('motivation')" id="cat-motivation" class="comic-box px-3 py-1 text-xs sm:text-sm font-bangers rounded-lg hover:bg-yellow-300 transition-colors">
+                🔥 MOTIVATION
+            </button>
+            <button onclick="setCategory('prompts')" id="cat-prompts" class="comic-box px-3 py-1 text-xs sm:text-sm font-bangers rounded-lg hover:bg-yellow-300 transition-colors">
+                🎨 PROMPTS
+            </button>
+        </div>
+
+        <!-- VINTAGE TV SET CONTAINER -->
+        <div class="w-full tv-cabinet p-4 sm:p-6 relative flex flex-col items-center">
+            
+            <!-- TV Antenna -->
+            <div class="absolute -top-10 flex justify-center w-full pointer-events-none">
+                <div class="w-2 h-12 bg-gray-800 transform -rotate-25 origin-bottom border-2 border-black"></div>
+                <div class="w-2 h-12 bg-gray-800 transform rotate-25 origin-bottom border-2 border-black"></div>
+                <div class="absolute -top-2 w-4 h-4 bg-red-600 rounded-full border-2 border-black"></div>
+            </div>
+
+            <!-- TV Screen Frame & Speaker Controls -->
+            <div class="w-full flex flex-col md:flex-row items-center gap-4">
+                
+                <!-- CRT Display Area -->
+                <div class="w-full md:w-4/5 aspect-[4/3] crt-screen crt-glow p-4 flex flex-col justify-between relative">
+                    
+                    <!-- Scanlines overlay -->
+                    <div class="scanlines"></div>
+                    
+                    <!-- TV Static overlay (triggered on change) -->
+                    <div id="tv-static-layer" class="absolute inset-0 tv-static hidden z-20"></div>
+
+                    <!-- Action Splash Banner (POW/BAM Effect) -->
+                    <div id="action-splash" class="absolute top-4 right-4 z-30 hidden">
+                        <div class="bg-yellow-400 text-black font-bangers text-2xl sm:text-4xl px-3 py-1 rounded-md border-4 border-black transform rotate-12 shadow-lg">
+                            KAPOW!
+                        </div>
+                    </div>
+
+                    <!-- Screen Header info -->
+                    <div class="flex justify-between items-center text-[10px] sm:text-xs font-pixel text-emerald-400 z-10">
+                        <span id="tv-channel">CH-01: ALL</span>
+                        <span id="tv-status" class="animate-pulse">● LIVE</span>
+                    </div>
+
+                    <!-- Main Screen Text Content in Speech Bubble -->
+                    <div class="my-auto z-10 flex flex-col items-center justify-center p-2">
+                        <div class="speech-bubble w-full p-4 sm:p-6 text-slate-900 text-center">
+                            <p id="quote-text" class="text-base sm:text-xl font-bold leading-snug">
+                                "PRESS THE BIG RED BUTTON TO TUNE IN TO A CARTOON QUOTE OR JOKE!"
+                            </p>
+                            <span id="quote-author" class="block mt-3 text-xs sm:text-sm font-bangers text-red-600 text-right">
+                                — TV ANNOUNCER
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Details -->
+                    <div class="flex justify-between items-center text-[9px] sm:text-[11px] font-pixel text-emerald-600 z-10">
+                        <span>VOL: |||||| 100%</span>
+                        <span id="quote-category-tag" class="bg-emerald-900 text-emerald-200 px-2 py-0.5 rounded border border-emerald-500">
+                            SYSTEM READY
+                        </span>
+                    </div>
+                </div>
+
+                <!-- TV Right Side Controls (Dials & Speaker Grid) -->
+                <div class="w-full md:w-1/5 flex md:flex-col items-center justify-around gap-3 bg-amber-950/40 p-3 rounded-2xl border-2 border-black/50">
+                    
+                    <!-- Channel Knob 1 -->
+                    <div class="flex flex-col items-center gap-1">
+                        <div id="knob-1" onclick="triggerChannelSpin()" class="tv-knob transition-transform duration-300"></div>
+                        <span class="text-[9px] font-pixel text-amber-200">CHANNEL</span>
+                    </div>
+
+                    <!-- Knob 2 -->
+                    <div class="flex flex-col items-center gap-1">
+                        <div id="knob-2" onclick="triggerChannelSpin()" class="tv-knob transition-transform duration-300"></div>
+                        <span class="text-[9px] font-pixel text-amber-200">TUNE</span>
+                    </div>
+
+                    <!-- Speaker Grille -->
+                    <div class="flex flex-col gap-1 w-16">
+                        <div class="h-1.5 bg-black rounded-full"></div>
+                        <div class="h-1.5 bg-black rounded-full"></div>
+                        <div class="h-1.5 bg-black rounded-full"></div>
+                        <div class="h-1.5 bg-black rounded-full"></div>
+                        <div class="h-1.5 bg-black rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BIG CHUNKY ARCADE BUTTON AREA -->
+        <div class="flex flex-col items-center gap-2 my-2">
+            <button id="btn-next" onclick="generateNextQuote()" class="arcade-button tracking-wider text-xl sm:text-3xl">
+                🔴 PUSH FOR QUOTE / JOKE 🔴
+            </button>
+            <span class="text-xs font-bangers tracking-wide text-slate-800 bg-white/70 px-3 py-0.5 rounded-full border border-black">
+                TAP BUTTON OR SPACEBAR TO SWITCH!
+            </span>
+        </div>
+
+    </main>
+
+    <!-- Footer Controls & Add Custom Modal Toggle -->
+    <footer class="w-full max-w-2xl flex justify-between items-center mt-2 px-2">
+        <button onclick="openModal()" class="comic-box-blue px-3 py-1.5 text-xs sm:text-sm font-bangers rounded-xl hover:bg-cyan-300 transition-colors flex items-center gap-1">
+            ➕ ADD YOUR OWN QUOTE
+        </button>
+        <span class="text-[10px] font-pixel text-slate-800">
+            CARTOON TV v1.0
+        </span>
+    </footer>
+
+    <!-- ADD CUSTOM QUOTE MODAL -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="comic-box-yellow w-full max-w-md p-6 rounded-2xl relative flex flex-col gap-4">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute -top-3 -right-3 bg-red-600 text-white font-bangers text-lg w-8 h-8 rounded-full border-2 border-black flex items-center justify-center shadow-md">
+                ✕
+            </button>
+
+            <h2 class="font-bangers text-2xl text-center text-black">
+                ✏️ BROADCAST YOUR OWN QUOTE!
+            </h2>
+
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-bangers text-black">CATEGORY:</label>
+                <select id="input-category" class="p-2 font-comic border-2 border-black rounded-lg bg-white font-bold text-sm">
+                    <option value="jokes">😂 Joke</option>
+                    <option value="motivation">🔥 Motivation Boost</option>
+                    <option value="prompts">🎨 Creative Prompt</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-bangers text-black">YOUR QUOTE OR JOKE:</label>
+                <textarea id="input-quote" rows="3" placeholder="Type something funny or inspiring..." class="p-2 border-2 border-black rounded-lg font-bold text-sm"></textarea>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-bangers text-black">AUTHOR / CHARACTER:</label>
+                <input id="input-author" type="text" placeholder="e.g. Bugs Bunny, Superhero, Me" class="p-2 border-2 border-black rounded-lg font-bold text-sm" />
+            </div>
+
+            <button onclick="saveCustomQuote()" class="comic-box-blue py-3 font-bangers text-lg rounded-xl hover:bg-cyan-300 text-center mt-2">
+                📺 BROADCAST TO TV
+            </button>
+        </div>
+    </div>
+
+    <!-- AUDIO SYNTHESIZER & APP LOGIC -->
+    <script>
+        // --- Web Audio API retro SFX generator ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playRetroSound(type) {
+            if (!audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+
+                if (type === 'button') {
+                    // Arcade Button Thump / Boing
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+                    osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
+                    
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.2);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+
+                } else if (type === 'static') {
+                    // TV Channel Change Noise Burst
+                    const bufferSize = audioCtx.sampleRate * 0.15; // 150ms noise
+                    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                    const output = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = Math.random() * 2 - 1;
+                    }
+
+                    const whiteNoise = audioCtx.createBufferSource();
+                    whiteNoise.buffer = buffer;
+
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1000;
+
+                    const gain = audioCtx.createGain();
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.15);
+
+                    whiteNoise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    whiteNoise.start(now);
+                } else if (type === 'splat') {
+                    // Cartoon Action Splat Sound
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
+
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.15);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                }
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        // --- Quotes Database ---
+        const initialQuotes = [
+            // JOKES
+            { text: "Why don't scientists trust atoms? Because they make up everything!", author: "Professor Pixel", category: "jokes" },
+            { text: "What do you call a fake noodle? An Impasta!", author: "Chef Mario", category: "jokes" },
+            { text: "Why did the scarecrow win an award? Because he was outstanding in his field!", author: "Barnaby Bear", category: "jokes" },
+            { text: "How does a penguin build its house? Igloos it together!", author: "Chilly Willy", category: "jokes" },
+            { text: "What do you call a sleeping bull? A bulldozer!", author: "El Toro", category: "jokes" },
+            { text: "Why can't your nose be 12 inches long? Because then it would be a foot!", author: "Silly Sammy", category: "jokes" },
+
+            // MOTIVATION
+            { text: "With great power comes great need to take a nap!", author: "Lazy Superhero", category: "motivation" },
+            { text: "Always give 100%—unless you're donating blood!", author: "Captain Courage", category: "motivation" },
+            { text: "Even the tallest cartoon oak tree started as a tiny acorn seed that held its ground!", author: "Wise Old Owl", category: "motivation" },
+            { text: "Keep moving forward! Unless you're about to run off a cliff like Wile E. Coyote!", author: "Road Runner", category: "motivation" },
+            { text: "Believe in yourself, even when you're drawn out of proportion!", author: "Animator Art", category: "motivation" },
+
+            // PROMPTS
+            { text: "Draw a secret agent octopus trying to fit into a tiny business suit!", author: "Creative Spark", category: "prompts" },
+            { text: "Write a 3-sentence story about a toaster that gains superpowers!", author: "Plot Twist Bot", category: "prompts" },
+            { text: "Design a retro arcade cabinet for a game about flying pigs!", author: "Game Master", category: "prompts" },
+            { text: "Invent a new cartoon vegetable and give it a funny catchphrase!", author: "Doodle Master", category: "prompts" }
+        ];
+
+        let quotes = [...initialQuotes];
+        let currentCategory = 'all';
+        let actionWords = ['KAPOW!', 'BAM!', 'ZAP!', 'BOOM!', 'POW!', 'SPLASH!'];
+
+        // On Load Setup
+        window.addEventListener('DOMContentLoaded', () => {
+            updateCategoryUI();
+            
+            // Allow keyboard Spacebar or Enter to press arcade button
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'INPUT') {
+                    e.preventDefault();
+                    generateNextQuote();
+                }
+            });
+        });
+
+        function setCategory(cat) {
+            initAudio();
+            playRetroSound('static');
+            currentCategory = cat;
+            updateCategoryUI();
+            generateNextQuote();
+        }
+
+        function updateCategoryUI() {
+            ['all', 'jokes', 'motivation', 'prompts'].forEach(c => {
+                const btn = document.getElementById(`cat-${c}`);
+                if (c === currentCategory) {
+                    btn.className = "comic-box-yellow px-3 py-1 text-xs sm:text-sm font-bangers rounded-lg transform scale-105 border-4";
+                } else {
+                    btn.className = "comic-box px-3 py-1 text-xs sm:text-sm font-bangers rounded-lg hover:bg-yellow-200 transition-colors";
+                }
+            });
+
+            document.getElementById('tv-channel').innerText = `CH-01: ${currentCategory.toUpperCase()}`;
+        }
+
+        function generateNextQuote() {
+            initAudio();
+            playRetroSound('button');
+
+            // TV Static transition effect
+            const staticLayer = document.getElementById('tv-static-layer');
+            staticLayer.classList.remove('hidden');
+
+            // Rotate TV knobs
+            rotateKnobs();
+
+            setTimeout(() => {
+                playRetroSound('static');
+            }, 50);
+
+            setTimeout(() => {
+                // Filter quotes
+                let filtered = quotes;
+                if (currentCategory !== 'all') {
+                    filtered = quotes.filter(q => q.category === currentCategory);
+                }
+
+                if (filtered.length === 0) {
+                    filtered = [{ text: "No quotes in this category yet! Add your own!", author: "TV Announcer", category: "notice" }];
+                }
+
+                // Pick random quote
+                const randomQuote = filtered[Math.floor(Math.random() * filtered.length)];
+
+                // Update TV Text
+                document.getElementById('quote-text').innerText = `"${randomQuote.text}"`;
+                document.getElementById('quote-author').innerText = `— ${randomQuote.author.toUpperCase()}`;
+                document.getElementById('quote-category-tag').innerText = randomQuote.category.toUpperCase();
+
+                // Hide static
+                staticLayer.classList.add('hidden');
+
+                // Trigger Action Splash KAPOW!
+                triggerActionSplash();
+
+            }, 180);
+        }
+
+        function triggerActionSplash() {
+            const splash = document.getElementById('action-splash');
+            const splashText = splash.querySelector('div');
+            
+            // Random Action word
+            const word = actionWords[Math.floor(Math.random() * actionWords.length)];
+            splashText.innerText = word;
+
+            splash.classList.remove('hidden');
+            splash.classList.remove('action-splash');
+            // Trigger reflow
+            void splash.offsetWidth;
+            splash.classList.add('action-splash');
+
+            playRetroSound('splat');
+
+            setTimeout(() => {
+                splash.classList.add('hidden');
+            }, 500);
+        }
+
+        function rotateKnobs() {
+            const knob1 = document.getElementById('knob-1');
+            const knob2 = document.getElementById('knob-2');
+            
+            const currentRot1 = knob1.dataset.rot ? parseInt(knob1.dataset.rot) : 0;
+            const currentRot2 = knob2.dataset.rot ? parseInt(knob2.dataset.rot) : 0;
+
+            const nextRot1 = currentRot1 + 45;
+            const nextRot2 = currentRot2 - 90;
+
+            knob1.style.transform = `rotate(${nextRot1}deg)`;
+            knob2.style.transform = `rotate(${nextRot2}deg)`;
+
+            knob1.dataset.rot = nextRot1;
+            knob2.dataset.rot = nextRot2;
+        }
+
+        function triggerChannelSpin() {
+            initAudio();
+            playRetroSound('static');
+            rotateKnobs();
+            generateNextQuote();
+        }
+
+        // --- Custom Quote Modal Functions ---
+        function openModal() {
+            initAudio();
+            playRetroSound('button');
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function saveCustomQuote() {
+            const cat = document.getElementById('input-category').value;
+            const text = document.getElementById('input-quote').value.trim();
+            const author = document.getElementById('input-author').value.trim() || 'Anonymous Cartoonist';
+
+            if (!text) {
+                alert("Please enter a quote or joke!");
+                return;
+            }
+
+            quotes.push({
+                text: text,
+                author: author,
+                category: cat
+            });
+
+            // Reset inputs
+            document.getElementById('input-quote').value = '';
+            document.getElementById('input-author').value = '';
+
+            closeModal();
+            setCategory(cat);
+            
+            // Broadcast new quote immediately
+            document.getElementById('quote-text').innerText = `"${text}"`;
+            document.getElementById('quote-author').innerText = `— ${author.toUpperCase()}`;
+            document.getElementById('quote-category-tag').innerText = cat.toUpperCase();
+            triggerActionSplash();
+        }
+    </script>
+</body>
+</html>
